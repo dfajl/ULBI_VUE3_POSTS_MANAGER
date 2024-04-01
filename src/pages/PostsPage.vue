@@ -82,53 +82,9 @@
 				this.dialogVisible = true;
 			},
 		},
-		watch: {
-			//page() { реализую параллельно бесконечную ленту
-			//this.fetchPosts();
-			/* 
-					следим за сменой номера страницы из метода changePage. при изменении модели page вызываем 
-					подгрузку новых постов
-				*/
-			//},
-		},
 		mounted() {
 			this.fetchPosts();
-
-			//intersectionObserverAPI
-			//console.log(this.$refs.observer);
-			//комменчу тут код, связанный с intersectionObserverAPI, потому что он будет вынесен в отдельную директиву
-			//const options = {
-			//root: document.querySelector('#scrollArea'), //область видимости браузера
-			//	rootMargin: '0px',
-			//	threshold: 1.0,
-			//};
-			// эта функция будет срабатывать при пересечении блока-маяка
-			//const callback = (entries, observer) => {
-			//console.log(entries);
-			/* 
-					по умолчанию функция срабатывает при пересечении вверх и вниз. а нам надо только вниз.
-					чтобы исправить это поведение, надо следить за свойством isIntersecting массива entries
-				*/
-			//	if (entries[0].isIntersecting) {
-			//		console.log('crossed');
-			//		this.loadInfinityPosts();
-			//	}
-			//};
-			//const observer = new IntersectionObserver(callback, options);
-			//observer.observe(this.$refs.observer); // указываем то, за чем будем следить
 		},
-
-		// ниже будет реализована сортировка массива posts через watch и computed для наглядности
-		/* watch: {
-			selectedSort(newValue) {
-				// название вотчера должно совпадать с названием изменяемой модели
-				// следим за примитивом, поэтому не надо делать глубокое слежение
-				// newValue - модель = selectedSort
-				this.posts.sort((post1, post2) => {
-					return post1[newValue].localeCompare(post2[newValue]);
-				});
-			},
-		}, */
 		computed: {
 			...mapState({
 				posts: (state) => state.post.posts, // обращаемся к стейту, потом к модулю, потом к самому полю
