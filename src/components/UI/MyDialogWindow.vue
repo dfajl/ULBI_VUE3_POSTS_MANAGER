@@ -8,25 +8,21 @@
 </template>
 
 <script>
-	import toggleMixin from '@/mixins/toggleMixin';
 	export default {
 		name: 'my-dialog-window',
-
-		//вместо этого кода тут будет миксин
-		/* props: {
+		props: {
 			show: {
 				type: Boolean,
 				default: false,
 			},
 		},
-		methods: {
-			hideDialog() {
-				this.$emit('update:show', false);
-			},
-		}, */
-		mixins: [toggleMixin],
-		mounted() {
-			console.log('component was mounted');
+		setup(props, { emit }) {
+			function hideDialog() {
+				emit('update:show', false);
+			}
+			return {
+				hideDialog,
+			};
 		},
 	};
 </script>

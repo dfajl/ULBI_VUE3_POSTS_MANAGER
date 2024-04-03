@@ -9,8 +9,6 @@ import router from '@/router/router';
 import store from '@/vuex/store';
 import directives from '@/directives/exportDirectives'; // импортируем пользовательские директивы
 
-console.log(components);
-
 const app = createApp(App);
 //создаем приложение на основе корневого компонента
 

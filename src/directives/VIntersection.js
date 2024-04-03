@@ -2,8 +2,8 @@
 
 export default {
 	mounted(el, binding) {
-		console.log(el); // <div class="observer"></div>
-		console.log(binding); // binding - объект, где в поле value лежит функция, которую я передаю при вызове директивы
+		//console.log(el); // <div class="observer"></div>
+		//console.log(binding); // binding - объект, где в поле value лежит функция, которую я передаю при вызове директивы
 
 		//intersectionObserverAPI
 		const options = {
@@ -15,8 +15,8 @@ export default {
 
 		// эта функция будет срабатывать при пересечении блока-маяка
 		const callback = (entries, observer) => {
-			console.log(entries);
-			console.log(observer);
+			//console.log(entries);
+			//console.log(observer);
 
 			/* 
 					по умолчанию функция срабатывает при пересечении вверх и вниз. а нам надо только вниз.
@@ -26,7 +26,7 @@ export default {
 				//не вызываем директиву, когда ВСЕ 100 постов загружены
 				entries[0].isIntersecting
 			) {
-				console.log('crossed');
+				//console.log('crossed');
 				/* console.log(binding.value.method.returnPageNumber());
 				console.log(binding.value.method.returnTotalPages()); */
 				binding.value.method(); // вызываем функцию, которую передали в объект binding

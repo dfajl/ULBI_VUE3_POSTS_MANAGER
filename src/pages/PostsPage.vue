@@ -6,7 +6,6 @@
 				Создать пост
 			</my-button>
 
-			<my-button @click="fetchPosts">Загрузить посты</my-button>
 			<my-select
 				:model-value="selectedSort"
 				@update:model-value="setSelectedSort"
@@ -45,75 +44,104 @@
 <script>
 	import PostForm from '@/components/PostForm';
 	import PostList from '@/components/PostList';
-	import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+	import { ref, onMounted, computed } from 'vue';
+	import { useStore } from 'vuex';
 
 	export default {
 		components: {
 			PostForm,
 			PostList,
 		},
-		data() {
-			return {
-				dialogVisible: false,
-			};
-		},
-		methods: {
-			//вызываем здесь через spread-оператор mapActions и mapMutations
-			...mapMutations({
-				setPage: 'post/setPage',
-				setSearchQuery: 'post/setSearchQuery',
-				setSelectedSort: 'post/setSelectedSort',
-			}),
-			...mapActions({
-				fetchPosts: 'post/fetchPosts',
-				loadInfinityPosts: 'post/loadInfinityPosts',
-			}),
 
-			createPost(post) {
-				const localPosts = [...this.posts, post];
-				this.$store.commit('post/setPosts', localPosts);
-				this.dialogVisible = false;
-			},
-			deletePostItem(post) {
-				let posts = this.posts.filter((item) => item.id != post.id);
-				this.$store.commit('post/setPosts', posts);
-			},
-			showDialog() {
-				this.dialogVisible = true;
-			},
-		},
-		mounted() {
-			this.fetchPosts();
-		},
-		computed: {
-			...mapState({
-				posts: (state) => state.post.posts, // обращаемся к стейту, потом к модулю, потом к самому полю
-				isPostsLoading: (state) => state.post.isPostsLoading,
-				selectedSort: (state) => state.post.selectedSort,
-				searchQuery: (state) => state.post.searchQuery,
-				page: (state) => state.post.page, //номер страницы
-				limit: (state) => state.post.limit, //кол-во постов на странице
-				totalPages: (state) => state.post.totalPages, //кол-во страниц
-				sortOptions: (state) => state.post.sortOptions,
-			}),
-			...mapGetters({
-				sortedPosts: 'post/sortedPosts',
-				sortedAndSearchPosts: 'post/sortedAndSearchPosts',
-			}),
+		setup() {
+			const store = useStore(); // инициализация стора
+			let dialogVisible = ref(false);
+
+			//инициализация стейта стора
+			const posts = computed(() => store.state.post.posts);
+			const isPostsLoading = computed(
+				() => store.state.post.isPostsLoading,
+			);
+			const selectedSort = computed(() => store.state.post.selectedSort);
+			const searchQuery = computed(() => store.state.post.searchQuery);
+			const page = computed(() => store.state.post.page); //номер страницы
+			const limit = computed(() => store.state.post.limit); //кол-во постов на странице
+			const totalPages = computed(() => store.state.post.totalPages); //кол-во страниц
+			const sortOptions = computed(() => store.state.post.sortOptions);
+
+			//инициализация геттеров стора
+			const sortedPosts = computed(
+				() => store.getters['post/sortedPosts'],
+			);
+			const sortedAndSearchPosts = computed(
+				() => store.getters['post/sortedAndSearchPosts'],
+			);
+
+			//инициализация мутаций стора
+			//const setPage = (event) => store.commit('post/setPage', event);
+			const setSearchQuery = (searchQuery) =>
+				store.commit('post/setSearchQuery', searchQuery);
+			const setSelectedSort = (selectedSort) =>
+				store.commit('post/setSelectedSort', selectedSort);
+
+			//инициализация actions
+			const loadInfinityPosts = () =>
+				store.dispatch('post/loadInfinityPosts');
+
+			function createPost(post) {
+				const localPosts = [...posts.value, post];
+				store.commit('post/setPosts', localPosts);
+				dialogVisible.value = false;
+			}
+
+			function deletePostItem(post) {
+				const localPosts = posts.value.filter(
+					(item) => item.id != post.id,
+				);
+				store.commit('post/setPosts', localPosts);
+			}
+
+			function showDialog() {
+				dialogVisible.value = true;
+			}
+
+			onMounted(() => {
+				store.dispatch('post/fetchPosts');
+			});
+
+			return {
+				dialogVisible,
+				showDialog,
+				deletePostItem,
+				createPost,
+				isPostsLoading,
+				selectedSort,
+				searchQuery,
+				sortOptions,
+				sortedPosts,
+				sortedAndSearchPosts,
+				page,
+				totalPages,
+				//setPage,
+				setSearchQuery,
+				setSelectedSort,
+				loadInfinityPosts,
+			};
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
 	.btn_wrapper {
+		border-radius: 5px;
 		margin-top: 20px;
 		padding: 0 10px 0 10px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		border: 2px solid teal;
 		height: 50px;
-		background: rgba(148, 146, 146, 0.205);
+		background-color: rgb(179, 178, 178);
+		box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.675);
 	}
 
 	.post-item_wrapper {
@@ -132,11 +160,6 @@
 			cursor: pointer;
 		}
 	}
-
-	.currentPage {
-		background: rgba(46, 139, 86, 0.684);
-	}
-
 	.observer {
 		height: 10px;
 	}

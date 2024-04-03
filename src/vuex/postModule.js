@@ -27,19 +27,13 @@ export const postModule = {
 	// кэшируемые вычисляемые св-ва приложения. сюда можно перенести вычисляемые св-ва компонента
 	getters: {
 		sortedPosts(state) {
-			console.log('computed сработал в sortedPosts');
 			return [...state.posts].sort((post1, post2) => {
 				return post1[state.selectedSort]?.localeCompare(
 					post2[state.selectedSort],
 				);
 			});
-			/* почему важно сделать проверку на существование свойства: потому что у нас вначале идет сортировка по пустой строке(selectedSort: ''). без ? левая часть будет is nоt defined и будет ошибка, потому что метод localeCompare обращается к is nоt defined. у post2 проверка не нужна, т.к. к нему нет метода изначально
-			 */
 		},
 		sortedAndSearchPosts(state, getters) {
-			console.log('computed сработал в sortedAndSearchPosts');
-			console.log(getters.sortedPosts); // [] при загрузке страницы
-
 			return getters.sortedPosts.filter((post) =>
 				post.title
 					.toLowerCase()
@@ -177,7 +171,7 @@ export const postModule = {
 					),
 				);
 				commit('setPosts', [...state.posts, ...response.data]);
-				console.log(state.posts);
+				//console.log(state.posts);
 				//мы при прокрутке страницы складываем все подгруженные посты в единый массив
 			} catch (error) {
 				console.log(`Ошибка: ${error}`);

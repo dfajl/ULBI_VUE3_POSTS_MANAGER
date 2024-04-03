@@ -1,8 +1,6 @@
 <template>
-	<my-navbar></my-navbar>
 	<div class="app">
-		<!-- пишем <navbar></navbar> над <router-view></router-view>,
-		чтобы навбар был на каждой странице -->
+		<my-navbar></my-navbar>
 		<router-view></router-view>
 	</div>
 </template>
@@ -14,6 +12,7 @@
 <style lang="scss">
 	body {
 		font-family: 'Montserrat', sans-serif;
+		background: #e1e1e1;
 	}
 	* {
 		margin: 0;
