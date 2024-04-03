@@ -44,8 +44,8 @@
 <script>
 	import PostForm from '@/components/PostForm';
 	import PostList from '@/components/PostList';
-	import { ref, onMounted, computed } from 'vue';
-	import { useStore } from 'vuex';
+	import useStoreComposable from '../composables/useStoreComposable';
+	import { ref, onMounted } from 'vue';
 
 	export default {
 		components: {
@@ -54,66 +54,8 @@
 		},
 
 		setup() {
-			const store = useStore(); // инициализация стора
 			let dialogVisible = ref(false);
-
-			//инициализация стейта стора
-			const posts = computed(() => store.state.post.posts);
-			const isPostsLoading = computed(
-				() => store.state.post.isPostsLoading,
-			);
-			const selectedSort = computed(() => store.state.post.selectedSort);
-			const searchQuery = computed(() => store.state.post.searchQuery);
-			const page = computed(() => store.state.post.page); //номер страницы
-			const limit = computed(() => store.state.post.limit); //кол-во постов на странице
-			const totalPages = computed(() => store.state.post.totalPages); //кол-во страниц
-			const sortOptions = computed(() => store.state.post.sortOptions);
-
-			//инициализация геттеров стора
-			const sortedPosts = computed(
-				() => store.getters['post/sortedPosts'],
-			);
-			const sortedAndSearchPosts = computed(
-				() => store.getters['post/sortedAndSearchPosts'],
-			);
-
-			//инициализация мутаций стора
-			//const setPage = (event) => store.commit('post/setPage', event);
-			const setSearchQuery = (searchQuery) =>
-				store.commit('post/setSearchQuery', searchQuery);
-			const setSelectedSort = (selectedSort) =>
-				store.commit('post/setSelectedSort', selectedSort);
-
-			//инициализация actions
-			const loadInfinityPosts = () =>
-				store.dispatch('post/loadInfinityPosts');
-
-			function createPost(post) {
-				const localPosts = [...posts.value, post];
-				store.commit('post/setPosts', localPosts);
-				dialogVisible.value = false;
-			}
-
-			function deletePostItem(post) {
-				const localPosts = posts.value.filter(
-					(item) => item.id != post.id,
-				);
-				store.commit('post/setPosts', localPosts);
-			}
-
-			function showDialog() {
-				dialogVisible.value = true;
-			}
-
-			onMounted(() => {
-				store.dispatch('post/fetchPosts');
-			});
-
-			return {
-				dialogVisible,
-				showDialog,
-				deletePostItem,
-				createPost,
+			const {
 				isPostsLoading,
 				selectedSort,
 				searchQuery,
@@ -122,7 +64,48 @@
 				sortedAndSearchPosts,
 				page,
 				totalPages,
-				//setPage,
+				posts,
+				loadInfinityPosts,
+				setSearchQuery,
+				setSelectedSort,
+				setPosts,
+				loadPosts,
+			} = useStoreComposable();
+
+			function createPost(post) {
+				const localPosts = [...posts.value, post];
+				setPosts(localPosts);
+				dialogVisible.value = false;
+			}
+
+			function deletePostItem(post) {
+				const localPosts = posts.value.filter(
+					(item) => item.id != post.id,
+				);
+				setPosts(localPosts);
+			}
+
+			function showDialog() {
+				dialogVisible.value = true;
+			}
+
+			onMounted(() => {
+				loadPosts();
+			});
+
+			return {
+				dialogVisible,
+				isPostsLoading,
+				selectedSort,
+				searchQuery,
+				sortOptions,
+				sortedPosts,
+				sortedAndSearchPosts,
+				page,
+				totalPages,
+				showDialog,
+				deletePostItem,
+				createPost,
 				setSearchQuery,
 				setSelectedSort,
 				loadInfinityPosts,
@@ -164,3 +147,4 @@
 		height: 10px;
 	}
 </style>
+../composables/useStoreComposable
