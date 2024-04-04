@@ -6,11 +6,14 @@ import App from '@/App.vue';
 
 import components from '@/components/UI/exportComponents'; // импортируем пользовательские компоненты
 import router from '@/router/router';
-import store from '@/vuex/store';
+//import store from '@/vuex/store';
 import directives from '@/directives/exportDirectives'; // импортируем пользовательские директивы
+import { createPinia } from 'pinia';
 
 const app = createApp(App);
 //создаем приложение на основе корневого компонента
+
+const pinia = createPinia();
 
 // это и есть глобальная регистрация компонентов
 components.forEach((component) => {
@@ -22,6 +25,7 @@ directives.forEach((directive) => {
 	app.directive(directive.name, directive);
 });
 
-app.use(router).use(store).mount('#app');
+app.use(router).use(pinia).mount('#app'); //используем pinia, а не vuex
+//app.use(router).use(store).mount('#app');
 //у нашего компонента App есть метод mount('#app'), который позволяет вмонтировать компонент App
 // <div id="app"></div>

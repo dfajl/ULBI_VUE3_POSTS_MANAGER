@@ -1,7 +1,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 
-export default function useStoreComposable() {
+export default function useVuexStore() {
 	const store = useStore(); // инициализация стора
 
 	//инициализация стейта стора

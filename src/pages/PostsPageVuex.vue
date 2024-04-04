@@ -44,7 +44,7 @@
 <script>
 	import PostForm from '@/components/PostForm';
 	import PostList from '@/components/PostList';
-	import useStoreComposable from '../composables/useStoreComposable';
+	import useVuexStore from '../composables/useVuexStore';
 	import { ref, onMounted } from 'vue';
 
 	export default {
@@ -70,7 +70,7 @@
 				setSelectedSort,
 				setPosts,
 				loadPosts,
-			} = useStoreComposable();
+			} = useVuexStore();
 
 			function createPost(post) {
 				const localPosts = [...posts.value, post];
@@ -147,4 +147,4 @@
 		height: 10px;
 	}
 </style>
-../composables/useStoreComposable
+../composables/useVuexStore
